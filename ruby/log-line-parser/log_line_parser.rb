@@ -1,23 +1,14 @@
-class LogLineParser
+# frozen_string_literal: true
+class LogLineParser # rubocop:disable Style/Documentation
+  attr_reader :message, :log_level
+
   def initialize(line)
-    @line = line
-    @colon_position = @line.index(':')
-    @size_of_string = @line.size
-  end
-
-  def message
-    @line[@colon_position + 1, @size_of_string].strip
-  end
-
-  def log_level
-    level = @line[0, @colon_position -1].scan(/\w+/)
-    level[0].downcase
+    level, line = line.split(':')
+    @message = line.strip
+    @log_level = level.gsub(/\[|\]/, '').downcase
   end
 
   def reformat
-    message = @line[@colon_position + 1, @size_of_string].strip
-    levels = @line[0, @colon_position -1].scan(/\w+/)
-    level = levels[0].downcase
-    "#{message} (#{level})"
+    "#{@message} (#{@log_level})"
   end
 end
